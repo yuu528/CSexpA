@@ -2,3 +2,6 @@
 *.out
 *.swp
 tmp.txt
+*.test.csv
+*.test.png
+100MB.txt
