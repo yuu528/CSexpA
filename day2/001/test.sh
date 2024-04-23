@@ -11,6 +11,7 @@ MAX_EXP=18
 echo "Buffer size,Time" > $OUT
 
 for i in $(seq 0 $MAX_EXP | xargs -n1 echo "2 ^" | bc); do
+	echo "Testing buffer size $i"
 	$EXE $TARGET_FILE $i >> $OUT
 done
 
