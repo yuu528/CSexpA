@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EXE="./001.out"
-TARGET_FILE="../100MB.txt"
+TARGET_FILE="../10MB.txt"
 
 OUT="./data.test.csv"
 GRAPH_OUT="./data.test.png"

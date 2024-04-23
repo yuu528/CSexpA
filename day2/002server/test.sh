@@ -1,7 +1,6 @@
 #!/bin/bash
 
 EXE="./002server.out"
-TARGET_FILE="../100MB.txt"
 
 OUT="./server.test.csv"
 GRAPH_OUT="./server.test.png"

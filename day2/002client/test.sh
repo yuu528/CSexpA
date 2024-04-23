@@ -2,7 +2,7 @@
 
 EXE="./002client.out"
 TARGET_IP="192.168.1.101"
-TARGET_FILE="../100MB.txt"
+TARGET_FILE="../10MB.txt"
 
 OUT="./client.test.csv"
 GRAPH_OUT="./client.test.png"
