@@ -24,6 +24,7 @@ set mono
 set datafile separator ","
 
 set logscale x 2
+set logscale y
 
 plot "$OUT" using 1:2 with linespoints pt 7 notitle
 EOF
