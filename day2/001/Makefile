@@ -18,5 +18,5 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $< -o $@.out
 
 clean:
-	-rm -f ${EXECUTABLE} *.o tmp.txt core
+	-rm -f ${EXECUTABLE} *.out *.o tmp.txt core
 
