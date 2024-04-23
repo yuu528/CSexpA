@@ -4,18 +4,18 @@ LD=g++
 CFLAGS=-c -Wall -pedantic-errors -O3 -std=gnu11 -I../
 LDFLAGS=
 OBJECTS=001.o ../exp1lib.o
-EXECUTABLE=001
+EXECUTABLE=001.out
 
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(LD) $(LDFLAGS) $(OBJECTS) -o $@.out
+	$(LD) $(LDFLAGS) $(OBJECTS) -o $@
 
 .cpp.o:
-	$(C++) $(CFLAGS) $< -o $@.out
+	$(C++) $(CFLAGS) $< -o $@
 
 .c.o:
-	$(CC) $(CFLAGS) $< -o $@.out
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
 	-rm -f ${EXECUTABLE} *.out *.o tmp.txt core
