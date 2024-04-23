@@ -9,13 +9,13 @@ EXECUTABLE=001
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(LD) $(LDFLAGS) $(OBJECTS) -o $@
+	$(LD) $(LDFLAGS) $(OBJECTS) -o $@.out
 
 .cpp.o:
-	$(C++) $(CFLAGS) $< -o $@
+	$(C++) $(CFLAGS) $< -o $@.out
 
 .c.o:
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@.out
 
 clean:
 	-rm -f ${EXECUTABLE} *.o tmp.txt core
