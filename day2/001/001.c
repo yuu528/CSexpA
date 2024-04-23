@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 	fclose(fpr);
 	fclose(fpw);
 
-	printf("Buffer Size,Time\n")
+	printf("Buffer Size,Time\n");
 	printf("%d,%lf\n", buf_size, t2 - t1);
 
 	return 0;
