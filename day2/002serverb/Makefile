@@ -3,8 +3,8 @@ C++=g++
 LD=g++
 CFLAGS=-c -Wall -pedantic-errors -O3 -std=gnu11 -I../
 LDFLAGS=
-OBJECTS=002server.o ../exp1lib.o
-EXECUTABLE=002server.out
+OBJECTS=002serverb.o ../exp1lib.o
+EXECUTABLE=002serverb.out
 
 all: $(EXECUTABLE)
 
