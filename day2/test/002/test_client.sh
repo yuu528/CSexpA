@@ -28,7 +28,8 @@ GRAPH_OUT="./002.test.png"
 MAX_EXP=18
 SLEEP=5
 
-echo "Buffer size,Time" > $OUT
+echo "Buffer size,Time" > $OUT_A
+echo "Buffer size,Time" > $OUT_B
 
 for i in $(seq 0 $MAX_EXP | xargs -n1 echo "2 ^" | bc); do
 	echo "Testing buffer size $i with send"
