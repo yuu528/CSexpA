@@ -24,6 +24,7 @@ OUT_B="./client.b.test.csv"
 SERVER_OUT_A="./server.a.test.csv"
 SERVER_OUT_B="./server.b.test.csv"
 GRAPH_OUT="./002.test.png"
+SERVER_GRAPH_OUT="./002.server.test.png"
 
 MAX_EXP=18
 SLEEP=5
@@ -56,7 +57,9 @@ set logscale x 2
 set logscale y
 
 plot "$OUT_A" using 1:2 with linespoints pt 7 title "Client(send)", \
-	"$SERVER_OUT_A" using 1:2 with linespoints pt 5 title "Server(recv)", \
-	"$OUT_B" using 1:2 with linespoints pt 9 title "Client(write)", \
-	"$SERVER_OUT_B" using 1:2 with linespoints pt 13 title "Server(read)"
+	"$OUT_B" using 1:2 with linespoints pt 9 title "Client(write)"
+
+set output "$SERVER_GRAPH_OUT"
+plot "$SERVER_OUT_A" using 1:2 with linespoints pt 7 title "Server(recv)", \
+	"$SERVER_OUT_B" using 1:2 with linespoints pt 9 title "Server(read)"
 EOF
