@@ -28,7 +28,7 @@ for i in $(seq 0 $MAX_EXP | xargs -n1 echo "2 ^" | bc); do
 	sleep $SLEEP
 done
 
-scp "$TARGET_USER@$TARGET_IP:$TARGET_CSV_PATH" "./"
+scp "$TARGET_USER@$TARGET_IP:$TARGET_CSV_PATH" "./" &&
 
 gnuplot <<EOF
 set terminal pngcairo
