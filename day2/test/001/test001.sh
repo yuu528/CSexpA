@@ -2,17 +2,17 @@
 
 cd $(dirname $0)
 
-pushd "../001a"
+pushd "../../001a"
 make
 popd
 
-pushd "../001b"
+pushd "../../001b"
 make
 popd
 
-EXE_A="../001a/001a.out"
-EXE_B="../001b/001b.out"
-TARGET_FILE="../10MB.txt"
+EXE_A="../../001a/001a.out"
+EXE_B="../../001b/001b.out"
+TARGET_FILE="../../10MB.txt"
 
 OUT_A="./001.a.test.csv"
 OUT_B="./001.b.test.csv"
