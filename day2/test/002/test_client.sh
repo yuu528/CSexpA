@@ -58,5 +58,5 @@ set logscale y
 plot "$OUT_A" using 1:2 with linespoints pt 7 title "Client(send)", \
 	"$SERVER_OUT_A" using 1:2 with linespoints pt 5 title "Server(recv)", \
 	"$OUT_B" using 1:2 with linespoints pt 9 title "Client(write)", \
-	"$SERVER_OUT_B" using 1:2 with linespoints pt 13 title "Server(read)", \
+	"$SERVER_OUT_B" using 1:2 with linespoints pt 13 title "Server(read)"
 EOF
