@@ -14,8 +14,9 @@ echo "Buffer size,Time" > $OUT_A
 echo "Buffer size,Time" > $OUT_B
 
 for i in $(seq 0 $MAX_EXP | xargs -n1 echo "2 ^" | bc); do
-	echo "Testing buffer size $i"
+	echo "Testing buffer size $i with fread/fwrite"
 	$EXE_A $TARGET_FILE $i >> $OUT_A
+	echo "Testing buffer size $i with read/write"
 	$EXE_B $TARGET_FILE $i >> $OUT_B
 done
 
