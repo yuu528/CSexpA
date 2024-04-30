@@ -5,12 +5,15 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include <sys/select.h>
 #include <sys/socket.h>
 
 #define MAXCHILD 2000
+
+int sleep_us = 0;
 
 bool echoBack(int acc) {
 	char buf[512];
@@ -21,6 +24,8 @@ bool echoBack(int acc) {
 		perror("recv");
 		return false;
 	}
+
+	usleep(sleep_us);
 
 	// check EOF
 	if(len == 0) {
@@ -156,6 +161,13 @@ void acceptLoop(int sock) {
 
 int main(int argc, char** argv) {
 	int sock_listen;
+
+	if(argc != 2) {
+		fprintf(stderr, "Usage: %s <sleep us>\n", argv[0]);
+		exit(1);
+	}
+
+	sleep_us = atoi(argv[1]);
 
 	sock_listen = tcp_listen(11111);
 	acceptLoop(sock_listen);

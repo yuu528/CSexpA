@@ -14,6 +14,8 @@
 
 #define MAXCHILD 2000
 
+int sleep_us = 0;
+
 void echoBackLoop(int acc) {
 	char buf[512];
 	ssize_t len = 0;
@@ -24,6 +26,8 @@ void echoBackLoop(int acc) {
 			perror("recv");
 			return;
 		}
+
+		usleep(sleep_us);
 
 		// check EOF
 		if(len == 0) {
@@ -93,6 +97,13 @@ void acceptLoop(int sock) {
 
 int main(int argc, char** argv) {
 	int sock_listen;
+
+	if(argc != 2) {
+		fprintf(stderr, "Usage: %s <sleep>\n", argv[0]);
+		exit(1);
+	}
+
+	sleep_us = atoi(argv[1]);
 
 	sock_listen = tcp_listen(11111);
 	acceptLoop(sock_listen);
