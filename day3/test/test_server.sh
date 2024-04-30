@@ -20,7 +20,7 @@ SLEEP=3
 
 trapped=0
 
-trap "trapped=1; echo 'Quit while'" SIGQUIT # Quit while loop with Ctrl+\
+trap "trapped=1; echo 'Quit while'" SIGINT # Quit while loop with Ctrl+\
 
 function run() {
 	# $1 = dir, $2 = bin, $3 = sleep, $4 = log
@@ -47,29 +47,37 @@ function run() {
 
 	[ -e /proc/$pid/status ] && kill $pid
 
-	echo "$3,$vmpeak,$max_sockets" >> "$4"
-
-	sleep $SLEEP
+	echo "$3,$vmpeak,$max_sockets" | tee -a "$4"
 }
 
-pushd "$SERVER_SL_DIR"
+[ $# -ne 2 ] && echo "Usage: $0 <SL/MT/MP> <sleep>" && exit 1
+
+case $1 in
+	SL)
+		dir="$SERVER_SL_DIR"
+		server="$SERVER_SL"
+		out="$OUT_SL"
+		;;
+	MT)
+		dir="$SERVER_MT_DIR"
+		server="$SERVER_MT"
+		out="$OUT_MT"
+		;;
+	MP)
+		dir="$SERVER_MP_DIR"
+		server="$SERVER_MP"
+		out="$OUT_MP"
+		;;
+	*)
+		echo "Invalid argument: $1"
+		exit 1
+		;;
+esac
+
+pushd "$dir"
 make
 popd
 
-pushd "$SERVER_MT_DIR"
-make
-popd
+echo "Sleep us,VmPeak,Max Sockets" > "$out"
 
-pushd "$SERVER_MP_DIR"
-make
-popd
-
-echo "Sleep us,VmPeak,Max Sockets" > "$OUT_SL"
-echo "Sleep us,VmPeak,Max Sockets" > "$OUT_MT"
-echo "Sleep us,VmPeak,Max Sockets" > "$OUT_MP"
-
-for i in $(cat <(echo 0) <(seq $MAX_EXP | xargs -n1 echo "10 ^" | bc)); do
-	run "$SERVER_SL_DIR" "$SERVER_SL" $i "$OUT_SL"
-	run "$SERVER_MT_DIR" "$SERVER_MT" $i "$OUT_MT"
-	run "$SERVER_MP_DIR" "$SERVER_MP" $i "$OUT_MP"
-done
+run "$dir" "$server" $2 "$out"
