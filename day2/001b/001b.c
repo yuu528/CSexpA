@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 	char buf[buf_size];
 
 	fdr = open(argv[1], O_RDONLY);
-	fdw = open("tmp.txt", O_WRONLY);
+	fdw = open("tmp.txt", O_WRONLY | O_CREAT, 0644);
 
 	double t1 = get_current_timecount();
 
