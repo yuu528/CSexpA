@@ -36,7 +36,6 @@ void echoBackLoop(int acc) {
 		buf[len + 1] = '\n';
 
 		fprintf(stderr, "[client]%s\n", buf);	// コンソールに出力
-		strncat(buf, ":OK\r\n", sizeof(buf) - strlen(buf) - 1);
 		len = strlen(buf);
 		if((len = send(acc, buf, len, 0)) == -1) {		// クライアントに送信
 			perror("send");
