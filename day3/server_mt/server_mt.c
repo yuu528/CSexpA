@@ -34,6 +34,7 @@ void echoBackLoop(int acc) {
 		// add return
 		buf[len] = '\r';
 		buf[len + 1] = '\n';
+		buf[len + 2] = '\0';
 
 		fprintf(stderr, "[client]%s\n", buf);	// コンソールに出力
 		len = strlen(buf);
