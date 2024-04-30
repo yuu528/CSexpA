@@ -1,4 +1,4 @@
-#include "../mylib.h"
+#include "mylib.h"
 
 #include <errno.h>
 #include <netdb.h>

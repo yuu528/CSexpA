@@ -1,9 +1,9 @@
 CC=gcc
 C++=g++
 LD=g++
-CFLAGS=-c -Wall -pedantic-errors -O0 -g3 -std=c11
+CFLAGS=-c -Wall -pedantic-errors -O0 -g3 -I ../
 LDFLAGS=
-OBJECTS=server_sl.o ../exp1lib.o
+OBJECTS=server_sl.o ../mylib.o
 EXECUTABLE=server_sl.out
 
 all: $(EXECUTABLE)
