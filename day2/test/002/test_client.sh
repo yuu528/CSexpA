@@ -13,6 +13,8 @@ popd
 EXE_A="../../002clienta/002clienta.out"
 EXE_B="../../002clientb/002clientb.out"
 TARGET_FILE="../../10MB.txt"
+COPIED_FILE_A="../../002clienta/tmp.txt"
+COPIED_FILE_B="../../002clientb/tmp.txt"
 
 TARGET_IP="192.168.100.1"
 TARGET_USER="pi"
@@ -35,10 +37,12 @@ echo "Buffer size,Time" > $OUT_B
 for i in $(seq 0 $MAX_EXP | xargs -n1 echo "2 ^" | bc); do
 	echo "Testing buffer size $i with send"
 	$EXE_A $TARGET_IP $TARGET_FILE $i >> $OUT_A
+	du -b $COPIED_FILE_A
 	sleep $SLEEP
 
 	echo "Testing buffer size $i with write"
 	$EXE_B $TARGET_IP $TARGET_FILE $i >> $OUT_B
+	du -b $COPIED_FILE_B
 	sleep $SLEEP
 done
 
