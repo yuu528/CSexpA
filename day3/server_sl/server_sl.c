@@ -28,12 +28,9 @@ bool echoBack(int acc) {
 		return false;
 	}
 
-	// add terminator
-	buf[len] = '\0';
-	char* retPtr = NULL;
-	if((retPtr = strpbrk(buf, "\r\n")) != NULL) {
-		*retPtr = '\0';
-	}
+	// add return
+	buf[len] = '\r';
+	buf[len + 1] = '\n';
 
 	// 入力された内容に ":OK" を付与して送信する
 	fprintf(stderr, "[client]%s\n", buf);	// コンソールに出力
