@@ -32,7 +32,6 @@ bool echoBack(int acc) {
 	buf[len] = '\r';
 	buf[len + 1] = '\n';
 
-	// 入力された内容に ":OK" を付与して送信する
 	fprintf(stderr, "[client]%s\n", buf);	// コンソールに出力
 	strncat(buf, ":OK\r\n", sizeof(buf) - strlen(buf) - 1);
 	len = strlen(buf);
