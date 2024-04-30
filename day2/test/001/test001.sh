@@ -13,8 +13,7 @@ popd
 EXE_A="../../001a/001a.out"
 EXE_B="../../001b/001b.out"
 TARGET_FILE="../../10MB.txt"
-COPIED_FILE_A="../../001a/tmp.txt"
-COPIED_FILE_B="../../001b/tmp.txt"
+COPIED_FILE="tmp.txt"
 
 OUT_A="./001.a.test.csv"
 OUT_B="./001.b.test.csv"
@@ -22,17 +21,23 @@ GRAPH_OUT="./001.test.png"
 
 MAX_EXP=18
 
+rm $COPIED_FILE
+
 echo "Buffer size,Time" > $OUT_A
 echo "Buffer size,Time" > $OUT_B
 
 for i in $(seq 0 $MAX_EXP | xargs -n1 echo "2 ^" | bc); do
 	echo "Testing buffer size $i with fread/fwrite"
 	$EXE_A $TARGET_FILE $i >> $OUT_A
-	du -b $COPIED_FILE_A
+	du -b $COPIED_FILE
+
+	rm $COPIED_FILE
 
 	echo "Testing buffer size $i with read/write"
 	$EXE_B $TARGET_FILE $i >> $OUT_B
-	du -b $COPIED_FILE_B
+	du -b $COPIED_FILE
+
+	rm $COPIED_FILE
 done
 
 gnuplot <<EOF
