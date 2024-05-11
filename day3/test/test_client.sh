@@ -10,9 +10,6 @@ PORT="11111"
 
 DATA_SIZE=100
 
-MAX_THREAD=100
-THREAD_STEP=10
-
 OUT="./client.test.csv"
 
 [ $# -ne 1 ] && echo "Usage: $0 <threads>" && exit 1
