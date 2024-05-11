@@ -23,7 +23,7 @@ SLEEP=3
 
 trapped=0
 
-trap "trapped=1; echo 'Quit while'" SIGINT # Quit while loop with Ctrl+\
+trap "trapped=1; echo 'Quit while'" SIGINT # Quit while loop with Ctrl+C
 
 function run() {
 	# $1 = dir, $2 = bin, $3 = sleep, $4 = log
