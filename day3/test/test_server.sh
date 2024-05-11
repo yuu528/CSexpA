@@ -41,11 +41,11 @@ function run() {
 	while [ $trapped -eq 0 ] && [ -e /proc/$pid/status ]; do
 		# update VmPeak
 		vmpeak_tmp=$(cat /proc/$pid/status | grep VmPeak | cut -f2 | tr -d ' kB')
-		[ -e /proc/$pid/status ] && [ $vmpeak_tmp -gt $vmpeak ] && vmpeak=$vmpeak_tmp
+		[ -e /proc/$pid/status ] && [ $vmpeak_tmp -gt $vmpeak ] && vmpeak=$vmpeak_tmp && echo "VmPeak: $vmpeak"
 
 		# update max sockets
 		max_sockets_tmp=$(lsof -p $pid | grep TCP | wc -l)
-		[ -e /proc/$pid/status ] && [ $max_sockets_tmp -gt $max_sockets ] && max_sockets=$max_sockets_tmp
+		[ -e /proc/$pid/status ] && [ $max_sockets_tmp -gt $max_sockets ] && max_sockets=$max_sockets_tmp && echo "Max sockets: $max_sockets"
 	done
 
 	[ -e /proc/$pid/status ] && kill $pid
