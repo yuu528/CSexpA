@@ -47,8 +47,6 @@ int main(int argc, char** argv) {
 	int sock_client;
 	struct sockaddr addr;
 	int len = 0;
-	int ret = 0;
-	char buf[1024];
 
 	if(argc != 2) {
 		fprintf(stderr, "Usage: %s <sleep>\n", argv[0]);
