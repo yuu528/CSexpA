@@ -2,14 +2,17 @@
 
 cd $(dirname $0)
 
+SERVER_NM_DIR="../server_nm/"
 SERVER_SL_DIR="../server_sl/"
 SERVER_MT_DIR="../server_mt/"
 SERVER_MP_DIR="../server_mp/"
 
+SERVER_NM="server_nm.out"
 SERVER_SL="server_sl.out"
 SERVER_MT="server_mt.out"
 SERVER_MP="server_mp.out"
 
+OUT_NM="./server_nm.test.csv"
 OUT_SL="./server_sl.test.csv"
 OUT_MT="./server_mt.test.csv"
 OUT_MP="./server_mp.test.csv"
@@ -50,9 +53,14 @@ function run() {
 	echo "$3,$vmpeak,$max_sockets" | tee -a "$4"
 }
 
-[ $# -ne 2 ] && echo "Usage: $0 <SL/MT/MP> <sleep>" && exit 1
+[ $# -ne 2 ] && echo "Usage: $0 <NM/SL/MT/MP> <sleep>" && exit 1
 
 case $1 in
+	NM)
+		dir="$SERVER_NM_DIR"
+		server="$SERVER_NM"
+		out="$OUT_NM"
+		;;
 	SL)
 		dir="$SERVER_SL_DIR"
 		server="$SERVER_SL"

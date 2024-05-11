@@ -15,8 +15,6 @@ THREAD_STEP=10
 
 OUT="./client.test.csv"
 
-SLEEP=3
-
 [ $# -ne 1 ] && echo "Usage: $0 <threads>" && exit 1
 
 pushd "$CLIENT_DIR"
