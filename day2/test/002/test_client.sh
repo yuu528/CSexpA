@@ -56,6 +56,9 @@ set datafile separator ","
 set logscale x 2
 set logscale y
 
+set xlabel "Buffer size"
+set ylabel "Time (s)"
+
 plot "$OUT_A" using 1:2 with linespoints pt 7 title "Client(send)", \
 	"$OUT_B" using 1:2 with linespoints pt 9 title "Client(write)"
 
