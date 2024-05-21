@@ -24,6 +24,14 @@ THREADS=(
 	1000
 )
 
+function print_msg() {
+	sep=$(echo "$1" | wc -L | awk '{for(i=0;i<$1;i++) printf "="}')
+
+	echo -e "\n$sep"
+	echo "$1"
+	echo -e "$sep\n"
+}
+
 cd $(dirname $0)
 
 pushd "$TARGET_PROGRAM_DIR"
@@ -33,12 +41,10 @@ popd
 echo 'threads,time,error_ratio' > $DATA_CSV
 
 for thread in ${THREADS[@]}; do
-	echo -e "\n============================"
-	echo "Testing with $thread threads"
-	echo -e "============================\n"
-
 	try=0
 	while [ $try -lt $RETRY ]; do
+		print_msg "Testing with $thread threads"
+
 		result=$("$TARGET_PROGRAM_DIR$TARGET_PROGRAM_EXE" "$IP" "$thread" 2>&1)
 
 		exit_code=$?
@@ -46,9 +52,7 @@ for thread in ${THREADS[@]}; do
 		if [ $exit_code -eq 0 ]; then
 			break
 		else
-			echo -e "\n============================"
-			echo "Error! ($exit_code) Retrying..."
-			echo -e "============================\n"
+			print_msg "Error! ($exit_code) Retrying..."
 
 			sleep $SLEEP_RETRY
 		fi
@@ -57,9 +61,7 @@ for thread in ${THREADS[@]}; do
 	done
 
 	if [ $try -ge $RETRY ]; then
-		echo -e "\n============================"
-		echo "Failed to get result for $thread threads"
-		echo -e "============================\n"
+		print_msg "Failed to get result for $thread threads"
 		continue
 	fi
 
