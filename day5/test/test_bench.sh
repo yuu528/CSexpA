@@ -8,7 +8,7 @@ TARGET_PROGRAM_EXE='bench.out'
 
 SLEEP=1
 SLEEP_RETRY=5
-RETRY=3
+RETRY=5
 
 IP='192.168.100.1'
 THREADS=(
@@ -40,11 +40,14 @@ for thread in ${THREADS[@]}; do
 	try=0
 	while [ $try -lt $RETRY ]; do
 		result=$("$TARGET_PROGRAM_DIR$TARGET_PROGRAM_EXE" "$IP" "$thread" 2>&1)
-		if [ $? -eq 0 ]; then
+
+		exit_code=$?
+
+		if [ $exit_code -eq 0 ]; then
 			break
 		else
 			echo -e "\n============================"
-			echo 'Error! Retrying...'
+			echo "Error! ($exit_code) Retrying..."
 			echo -e "============================\n"
 
 			sleep $SLEEP_RETRY
