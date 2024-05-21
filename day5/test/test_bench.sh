@@ -67,8 +67,22 @@ for thread in ${THREADS[@]}; do
 
 	echo -n "$thread," >> $DATA_CSV
 
+	# get time
 	# rev | cut -f1 | rev: get last field in the line
-	echo "$result" | tee >(cat 1>&2) | tail -2 | rev | cut -d' ' -f1 | rev | paste -sd, >> $DATA_CSV
+	echo "$result" | tee >(cat 1>&2) | tail -2 | head -1 | rev | cut -d' ' -f1 | rev | paste -sd, | tr -d '\n' >> $DATA_CSV
+
+	echo -n ',' >> $DATA_CSV
+
+	# error data rate (include size: 0)
+	zero_b_cnt=$(echo "$result" | grep -c 'Recieved Size: 0 bytes')
+
+	if [ $zero_b_cnt -eq 0 ]; then
+		echo '0' >> $DATA_CSV
+	else
+		echo "$zero_b_cnt / $thread" | bc -l >> $DATA_CSV
+	fi
+
+	echo -e "\nZero Byte Count: $zero_b_cnt / $thread"
 
 	sleep $SLEEP
 done
