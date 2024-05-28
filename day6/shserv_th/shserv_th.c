@@ -24,7 +24,11 @@ void exp1_create_thread(int sock) {
 	psock = malloc(sizeof(int));
 	*psock = sock;
 
-	pthread_create(&th, NULL, exp1_thread, psock);
+	if(pthread_create(&th, NULL, exp1_thread, psock) != 0) {
+		printf("pthread %d is failed\n", sock);
+		close(sock);
+	}
+
 	printf("thread %d is created\n", sock);
 }
 
