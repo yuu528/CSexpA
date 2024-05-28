@@ -14,6 +14,8 @@ void* exp1_thread(void *param) {
 
 	close(sock);
 	shutdown(sock, SHUT_RDWR);
+
+	printf("thread %d is ending\n", sock);
 }
 
 void exp1_create_thread(int sock) {
