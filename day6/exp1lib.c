@@ -304,7 +304,7 @@ void exp1_http_reply(int sock, exp1_info_type *info) {
 	len += sprintf(buf + len, "Content-Type: %s\r\n", info->type);
 	len += sprintf(buf + len, "\r\n");
 
-	ret = send(sock, buf, len, 0);
+	ret = send(sock, buf, len, MSG_NOSIGNAL);
 	if(ret < 0){
 		shutdown(sock, SHUT_RDWR);
 		close(sock);
@@ -320,7 +320,7 @@ void exp1_send_404(int sock) {
 
 	sprintf(buf, "HTTP/1.0 404 Not Found\r\n\r\n");
 	printf("%s", buf);
-	ret = send(sock, buf, strlen(buf), 0);
+	ret = send(sock, buf, strlen(buf), MSG_NOSIGNAL);
 
 	if(ret < 0){
 		shutdown(sock, SHUT_RDWR);
@@ -342,7 +342,7 @@ void exp1_send_file(int sock, char* filename) {
 
 	len = fread(buf, sizeof(char), 16384, fp);
 	while(len > 0){
-		int ret = send(sock, buf, len, 0);
+		int ret = send(sock, buf, len, MSG_NOSIGNAL);
 		if(ret < 0){
 			shutdown(sock, SHUT_RDWR);
 			close(sock);
