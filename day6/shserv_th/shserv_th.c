@@ -42,7 +42,11 @@ int main(int argc, char **argv) {
 		int sock_client;
 		int len;
 
-		sock_client = accept(sock_listen, &addr, (socklen_t*) &len);
+		if((sock_client = accept(sock_listen, &addr, (socklen_t*) &len)) == -1) {
+			if(errno != EINTR) {
+				perror("accept");
+			}
+		}
 
 		exp1_create_thread(sock_client);
 	}
