@@ -4,6 +4,7 @@ NM_DATA_CSV='nm.test.csv'
 SL_DATA_CSV='sl.test.csv'
 MP_DATA_CSV='mp.test.csv'
 TH_DATA_CSV='th.test.csv'
+AP_DATA_CSV='ap.test.csv'
 
 TIME_DATA_PNG='time.test.png'
 ERROR_DATA_PNG='error.test.png'
@@ -16,6 +17,8 @@ SLEEP_RETRY=5
 RETRY=5
 
 IP='192.168.100.1'
+PORT='10028'
+PORT_APACHE='80'
 THREADS=(
 	1
 	2
@@ -45,6 +48,7 @@ function wait_enter() {
 function run_test() {
 	TARGET_CSV="$1"
 	TARGET_PROGRAM="$2"
+	TARGET_PORT="$3"
 
 	wait_enter "\"$TARGET_PROGRAM\" program"
 
@@ -57,7 +61,7 @@ function run_test() {
 		while [ $try -lt $RETRY ]; do
 			print_msg "Testing with $thread threads"
 
-			result=$("$PROGRAM_DIR$PROGRAM_EXE" "$IP" "$thread" 2>&1)
+			result=$("$PROGRAM_DIR$PROGRAM_EXE" "$IP" "$thread" "$TARGET_PORT" 2>&1)
 
 			exit_code=$?
 
@@ -120,7 +124,8 @@ set ylabel "Time (sec.)"
 plot "$NM_DATA_CSV" using 1:2 with linespoints pt 2 title "No multiplexing", \
 	"$SL_DATA_CSV" using 1:2 with linespoints pt 7 title "select", \
 	"$MP_DATA_CSV" using 1:2 with linespoints pt 5 title "fork", \
-	"$TH_DATA_CSV" using 1:2 with linespoints pt 13 title "pthread"
+	"$TH_DATA_CSV" using 1:2 with linespoints pt 13 title "pthread", \
+	"$AP_DATA_CSV" using 1:2 with linespoints pt 1 title "Apache"
 EOF
 
 	gnuplot <<EOF
@@ -143,7 +148,8 @@ set ylabel "Error Rate"
 plot "$NM_DATA_CSV" using 1:3 with linespoints pt 2 title "No multiplexing", \
 	"$SL_DATA_CSV" using 1:3 with linespoints pt 7 title "select", \
 	"$MP_DATA_CSV" using 1:3 with linespoints pt 5 title "fork", \
-	"$TH_DATA_CSV" using 1:3 with linespoints pt 13 title "pthread"
+	"$TH_DATA_CSV" using 1:3 with linespoints pt 13 title "pthread", \
+	"$AP_DATA_CSV" using 1:3 with linespoints pt 1 title "Apache"
 EOF
 }
 
@@ -155,21 +161,23 @@ popd
 
 if [ $# -ne 1 ]; then
 	cat <<EOF
-Usage: $0 <NM/SL/MP/TH/PLOT>
+Usage: $0 <NM/SL/MP/TH/AP/PLOT>
 	NM: No multiplexing
 	SL: select
 	MP: fork
 	TH: pthread
+	AP: Apache
 	PLOT: plot data from NM, SL, MP and TH csv data files
 EOF
 	exit 1
 fi
 
 case "$1" in
-	NM) run_test "$NM_DATA_CSV" 'normal';;
-	SL) run_test "$SL_DATA_CSV" 'select';;
-	MP) run_test "$MP_DATA_CSV" 'fork';;
-	TH) run_test "$TH_DATA_CSV" 'pthread';;
+	NM) run_test "$NM_DATA_CSV" 'normal' "$PORT";;
+	SL) run_test "$SL_DATA_CSV" 'select' "$PORT";;
+	MP) run_test "$MP_DATA_CSV" 'fork' "$PORT";;
+	TH) run_test "$TH_DATA_CSV" 'pthread' "$PORT";;
+	AP) run_test "$AP_DATA_CSV" 'apache' "$PORT_APACHE";;
 	PLOT) plot_data;;
 	*) echo "Invalid argument"; exit 1;;
 esac
