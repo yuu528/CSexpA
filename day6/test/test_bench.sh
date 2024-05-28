@@ -24,9 +24,9 @@ THREADS=(
 	20
 	50
 	100
-	200
-	500
-	1000
+	#200
+	#500
+	#1000
 )
 
 function print_msg() {
@@ -100,18 +100,8 @@ function run_test() {
 	done
 }
 
-cd $(dirname $0)
-
-pushd "$PROGRAM_DIR"
-make || exit 1
-popd
-
-run_test "$NM_DATA_CSV" 'normal'
-run_test "$SL_DATA_CSV" 'select'
-run_test "$MP_DATA_CSV" 'fork'
-run_test "$TH_DATA_CSV" 'pthread'
-
-gnuplot <<EOF
+function plot_data() {
+	gnuplot <<EOF
 set terminal pngcairo
 set output "$TIME_DATA_PNG"
 
@@ -122,6 +112,8 @@ set datafile separator ","
 set logscale x
 set logscale y
 
+set key left top
+
 set xlabel "Client Threads"
 set ylabel "Time (sec.)"
 
@@ -131,7 +123,7 @@ plot "$NM_DATA_CSV" using 1:2 with linespoints pt 2 title "No multiplexing", \
 	"$TH_DATA_CSV" using 1:2 with linespoints pt 13 title "pthread"
 EOF
 
-gnuplot <<EOF
+	gnuplot <<EOF
 set terminal pngcairo
 set output "$ERROR_DATA_PNG"
 
@@ -140,6 +132,8 @@ set mono
 set datafile separator ","
 
 set logscale x
+
+set key left top
 
 set yrange [0:1]
 
@@ -151,3 +145,31 @@ plot "$NM_DATA_CSV" using 1:3 with linespoints pt 2 title "No multiplexing", \
 	"$MP_DATA_CSV" using 1:3 with linespoints pt 5 title "fork", \
 	"$TH_DATA_CSV" using 1:3 with linespoints pt 13 title "pthread"
 EOF
+}
+
+cd $(dirname $0)
+
+pushd "$PROGRAM_DIR"
+make || exit 1
+popd
+
+if [ $# -ne 1 ]; then
+	cat <<EOF
+Usage: $0 <NM/SL/MP/TH/PLOT>
+	NM: No multiplexing
+	SL: select
+	MP: fork
+	TH: pthread
+	PLOT: plot data from NM, SL, MP and TH csv data files
+EOF
+	exit 1
+fi
+
+case "$1" in
+	NM) run_test "$NM_DATA_CSV" 'normal';;
+	SL) run_test "$SL_DATA_CSV" 'select';;
+	MP) run_test "$MP_DATA_CSV" 'fork';;
+	TH) run_test "$TH_DATA_CSV" 'pthread';;
+	PLOT) plot_data;;
+	*) echo "Invalid argument"; exit 1;;
+esac
