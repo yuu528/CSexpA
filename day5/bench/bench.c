@@ -5,7 +5,7 @@
 
 #include <sys/resource.h>
 
-#define PORT 10028
+#define DEFAULT_PORT 10028
 
 const char* base_path = "";
 
@@ -13,13 +13,19 @@ char g_hostname[256];
 pthread_mutex_t g_mutex;
 int g_error_count;
 
+int port = DEFAULT_PORT;
+
 void* exp1_eval_thread(void* param);
 void exp1_session_error();
 
 int main(int argc, char** argv) {
-	if(argc != 3) {
-		printf("usage: %s [ip address] [# of clients]\n", argv[0]);
+	if(argc < 3) {
+		printf("usage: %s <ip address> <# of clients> [port]\n", argv[0]);
 		exit(-1);
+	}
+
+	if(argc == 4) {
+		port = atoi(argv[3]);
 	}
 
 	strcpy(g_hostname, argv[1]);
@@ -80,7 +86,7 @@ void* exp1_eval_thread(void* param) {
 	fileid = *pfileid;
 	free(pfileid);
 
-	sock = exp1_tcp_connect(g_hostname, PORT);
+	sock = exp1_tcp_connect(g_hostname, port);
 	if(sock < 0){
 		exp1_session_error();
 		pthread_exit(NULL);
