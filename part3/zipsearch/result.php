@@ -86,7 +86,7 @@ if(is_null($mysqli)) {
 }
 
 // check if query is kana
-if(preg_match('/^[ァ-ヿ]+$/u', $query) === 1) {
+if(preg_match('/^[ァ-ヿ0-9()]+$/u', $query) === 1) {
 	$sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . ' WHERE CONCAT(kana1, kana2, kana3) LIKE ? ORDER BY zip');
 } else {
 	$sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . ' WHERE CONCAT(addr1, addr2, addr3) LIKE ? ORDER BY zip');
