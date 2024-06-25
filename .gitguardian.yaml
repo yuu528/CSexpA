@@ -1,0 +1,4 @@
+secret:
+  ignored-matches:
+    - match: csexpatestpassword
+      name: test password for CSexpA
