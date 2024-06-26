@@ -24,7 +24,7 @@ const DB_HOST = 'localhost';
 const DB_USER = 'pi';
 const DB_PASSWORD = 'csexpatestpassword';
 const DB_NAME = 'CSexp1DB';
-const DB_TABLE = 'zipShizuoka';
+const DB_TABLE = 'zipJapan';
 
 const RESULTS_PER_PAGE = 10;
 
