@@ -9,7 +9,8 @@
 		<!-- Materialize -->
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
 <?php
@@ -33,7 +34,7 @@ const LANG_NO_QUERY = 'no_query';
 const LANG_DB_CONNECTION_ERROR = 'db_connection_error';
 const LANG_QUERY = 'query';
 const LANG_PAGE = 'page';
-const LANG_NINM = 'ninm';
+const LANG_NINM_PAGE = 'ninm_page';
 const LANG_NO_PAGE = 'no_page';
 const LANG_N_ALL = 'n_all';
 const LANG_ZIP = 'zip';
@@ -47,7 +48,7 @@ function i18n($id) {
 			LANG_DB_CONNECTION_ERROR => 'データベース接続エラー。',
 			LANG_QUERY => '検索値',
 			LANG_PAGE => 'ページ',
-			LANG_NINM => '%d 件中 %d 件',
+			LANG_NINM_PAGE => '%d / %d ページ',
 			LANG_NO_PAGE => '指定されたページ番号のページはありません。',
 			LANG_N_ALL => '全%d件',
 			LANG_ZIP => '郵便番号',
@@ -58,8 +59,8 @@ function i18n($id) {
 	return $langs[LANG_DEFAULT][$id];
 }
 
-function print_page_link($query, $page, $text) {
-	echo '<a href="result.php?query=' . urlencode($query) . '&page=' . $page . '">' . $text . '</a> ';
+function print_page_link($query, $page, $text, $class = 'waves-effect') {
+	echo '<li class="' . $class . '"><a href="result.php?query=' . urlencode($query) . '&page=' . $page . '">' . $text . '</a></li>';
 }
 
 // print a message as an error and exit
@@ -106,13 +107,7 @@ $sqlq->execute();
 $result = $sqlq->get_result();
 
 // echoback
-echo i18n(LANG_QUERY) . ': ' . $query;
-echo '<span style="display: inline-block; width: 2em;"></span>';
-echo i18n(LANG_PAGE) . ': ' . $page;
-echo '<br>';
-
 printf(i18n(LANG_N_ALL), $result->num_rows);
-echo '<br><br>';
 
 $from_row = RESULTS_PER_PAGE * ($page - 1);
 
@@ -121,6 +116,10 @@ if($result->num_rows <= $from_row) {
 }
 
 $result->data_seek($from_row);
+
+$end_page = ceil($result->num_rows / RESULTS_PER_PAGE);
+echo '<span style="display: inline-block; width: 2em;"></span>';
+printf(i18n(LANG_NINM_PAGE), $page, ceil($result->num_rows / RESULTS_PER_PAGE));
 
 // print result table
 // head
@@ -153,23 +152,33 @@ while(!is_null($row = $result->fetch_assoc()) && $row !== false && ++$count <= R
 
 echo '</tbody></table>';
 
-$end_page = ceil($result->num_rows / RESULTS_PER_PAGE);
+// print pagination
+echo '<ul class="pagination">';
 
+// prev
 if(1 < $page) {
-	print_page_link($query, $page - 1, '<');
+	print_page_link($query, $page - 1, '<i class="material-icons">chevron_left</i>');
+} else {
+	print_page_link($query, '', '<i class="material-icons">chevron_left</i>', 'disabled');
 }
 
+// pages
 for($i = 1; $i <= $end_page; $i++) {
 	if($i === $page) {
-		echo "$i ";
+		print_page_link($query, $i, $i, 'active');
 	} else {
 		print_page_link($query, $i, $i);
 	}
 }
 
+// next
 if($page < $end_page) {
-	print_page_link($query, $page + 1, '>');
+	print_page_link($query, $page + 1, '<i class="material-icons">chevron_right</i>');
+} else {
+	print_page_link($query, '', '<i class="material-icons">chevron_right</i>', 'disabled');
 }
 ?>
+		<!-- Materialize -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 	</body>
 </html>

@@ -1,0 +1,36 @@
+:root {
+	--color-primary: #01579b;
+	/* light-blue darken-4 */
+}
+
+.app-main {
+	margin: 0 1em 0 1em;
+}
+
+#form {
+	display: flex;
+}
+
+#btn-submit {
+	flex: none;
+}
+
+/* result page */
+ruby rt {
+	font-size: 0.5em;
+}
+
+/* Overwrite materialize theme */
+input[type=text]:focus {
+	border-bottom: 1px solid var(--color-primary) !important;
+	box-shadow: 0 1px 0 0 var(--color-primary) !important;
+}
+
+.pagination li.active {
+	background-color: var(--color-primary) !important;
+}
+
+.pagination li.disabled {
+	pointer-events: none;
+	user-select: none;
+}
