@@ -5,3 +5,4 @@ tmp.txt
 *.test.csv
 *.test.png
 100MB.txt
+/part3/downloaded_csvs/
