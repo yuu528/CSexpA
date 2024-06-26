@@ -111,7 +111,8 @@ printf(i18n(LANG_N_ALL), $result->num_rows);
 
 $from_row = RESULTS_PER_PAGE * ($page - 1);
 
-if($result->num_rows <= $from_row) {
+if($result->num_rows <= $from_row || $from_row < 0) {
+	echo '<br>';
 	print_error(i18n(LANG_NO_PAGE));
 }
 
