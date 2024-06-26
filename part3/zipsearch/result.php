@@ -93,34 +93,45 @@ if(is_null($mysqli)) {
 	print_error(i18n(LANG_DB_CONNECTION_ERROR));
 }
 
-// check if query is kana
-if(preg_match('/^[ァ-ヿ0-9()]+$/u', $query) === 1) {
-	$sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . ' WHERE CONCAT(kana1, kana2, kana3) LIKE ? ORDER BY zip');
+// check if query is kana or zip
+if(is_numeric($query)) {
+	$q_where = 'WHERE zip LIKE ?';
+} elseif(preg_match('/^[ァ-ヿ0-9()]+$/u', $query) === 1) {
+	$q_where = 'WHERE CONCAT(kana1, kana2, kana3) LIKE ?';
 } else {
-	$sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . ' WHERE CONCAT(addr1, addr2, addr3) LIKE ? ORDER BY zip');
+	$q_where = 'WHERE CONCAT(addr1, addr2, addr3) LIKE ?';
 }
 
-$query_like = "%$query%";
-$sqlq->bind_param('s', $query_like);
+// set limits
+$from_row = RESULTS_PER_PAGE * ($page - 1);
+$to_row = RESULTS_PER_PAGE;
 
+$sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . " $q_where LIMIT ?, ?");
+
+$query_like = "%$query%";
+$sqlq->bind_param('sii', $query_like, $from_row, $to_row);
+
+// get result
 $sqlq->execute();
 $result = $sqlq->get_result();
 
-// echoback
-printf(i18n(LANG_N_ALL), $result->num_rows);
+// count all result
+$sqlq_count = $mysqli->prepare('SELECT count(*) FROM ' . DB_TABLE . " $q_where");
+$sqlq_count->bind_param('s', $query_like);
 
-$from_row = RESULTS_PER_PAGE * ($page - 1);
+$sqlq_count->execute();
+$result_count = $sqlq_count->get_result();
+$count = $result_count->fetch_row()[0];
+printf(i18n(LANG_N_ALL), $count);
 
-if($result->num_rows <= $from_row || $from_row < 0) {
+if($count <= $from_row || $from_row < 0) {
 	echo '<br>';
 	print_error(i18n(LANG_NO_PAGE));
 }
 
-$result->data_seek($from_row);
-
-$end_page = ceil($result->num_rows / RESULTS_PER_PAGE);
+$end_page = ceil($count / RESULTS_PER_PAGE);
 echo '<span style="display: inline-block; width: 2em;"></span>';
-printf(i18n(LANG_NINM_PAGE), $page, ceil($result->num_rows / RESULTS_PER_PAGE));
+printf(i18n(LANG_NINM_PAGE), $page, $end_page);
 
 // print result table
 // head
@@ -135,8 +146,7 @@ foreach([
 // body
 echo '</tr></thead><tbody>';
 
-$count = 0;
-while(!is_null($row = $result->fetch_assoc()) && $row !== false && ++$count <= RESULTS_PER_PAGE) {
+while(!is_null($row = $result->fetch_assoc()) && $row !== false) {
 	// print address with ruby (kana)
 	echo '<tr><td><ruby>';
 	foreach([
