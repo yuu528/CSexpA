@@ -132,6 +132,9 @@ $sqlq_count->bind_param('s', $query_like);
 $sqlq_count->execute();
 $result_count = $sqlq_count->get_result();
 $count = $result_count->fetch_row()[0];
+
+$sqlq_count->close();
+
 printf(i18n(LANG_N_ALL), $count);
 
 if($count <= $from_row || $from_row < 0) {
@@ -173,6 +176,9 @@ while(!is_null($row = $result->fetch_assoc()) && $row !== false) {
 }
 
 echo '</tbody></table>';
+
+$sqlq->close();
+$mysqli->close();
 
 // print pagination
 echo '<ul class="pagination">';
