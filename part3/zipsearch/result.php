@@ -94,7 +94,14 @@ if(is_null($mysqli)) {
 }
 
 // check if query is kana or zip
+$query_like = "%$query%";
+
 if(is_numeric($query)) {
+	$q_where = 'WHERE zip LIKE ?';
+} elseif(preg_match('/^([0-9]*)-([0-9]*)$/', $query, $m) === 1 && count($m) == 3) {
+	// 123-4567 -> 123-4567
+	// 23-45 -> _23-45__
+	$query_like = str_repeat('_', 3 - strlen($m[1])) . $m[1] . $m[2] . str_repeat('_', 4 - strlen($m[2]));
 	$q_where = 'WHERE zip LIKE ?';
 } elseif(preg_match('/^[ァ-ヿ0-9()]+$/u', $query) === 1) {
 	$q_where = 'WHERE CONCAT(kana1, kana2, kana3) LIKE ?';
@@ -108,7 +115,6 @@ $to_row = RESULTS_PER_PAGE;
 
 $sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . " $q_where LIMIT ?, ?");
 
-$query_like = "%$query%";
 $sqlq->bind_param('sii', $query_like, $from_row, $to_row);
 
 // get result
@@ -158,7 +164,8 @@ while(!is_null($row = $result->fetch_assoc()) && $row !== false) {
 	}
 
 	// print zip
-	echo "</ruby></td><td>${row['zip']}</td></tr>";
+	$intzip = strval($row['zip']);
+	echo '</ruby></td><td>' . substr($intzip, 0, 3) . '-' . substr($intzip, -4, 4) . '</td></tr>';
 }
 
 echo '</tbody></table>';
