@@ -81,6 +81,10 @@ if(array_key_exists(GET_QUERY, $_GET)) {
 	print_error(i18n(LANG_NO_QUERY));
 }
 
+if($query === '') {
+	print_error(i18n(LANG_NO_QUERY));
+}
+
 if(array_key_exists(GET_PAGE, $_GET) && is_numeric($_GET[GET_PAGE])) {
 	$page = intval($_GET[GET_PAGE]);
 } else {
