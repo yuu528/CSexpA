@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>ZipSearch 検索結果</title>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<!-- Materialize -->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
 		<?php
 		ini_set('display_errors', '1');
 
@@ -125,18 +137,6 @@
 		$sqlq_count->close();
 		?>
 
-		<title>ZipSearch 検索結果</title>
-
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-		<!-- Materialize -->
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-		<link rel="stylesheet" href="style.css">
-	</head>
-	<body>
 		<!-- Result count -->
 		<?php
 		printf(i18n(LANG_N_ALL), $count);
