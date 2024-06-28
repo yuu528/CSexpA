@@ -21,8 +21,8 @@
 
 		<div class="app-main">
 			<p>郵便番号または住所の漢字・カナ表記のいずれかを入力し、検索ボタンを押してください。</p>
-			<form action="result.php" method="get" target="frame-result" id="form">
-				<input name="query" id="input-query" type="text" placeholder="住所">
+			<form class="input-field" action="result.php" method="get" target="frame-result" id="form">
+				<input name="query" id="input-query" type="text" placeholder="住所" class="autocomplete">
 				<button type="submit" id="btn-submit" class="btn waves-effect waves-light light-blue darken-4">
 					<i class="material-icons left">search</i>
 					検索

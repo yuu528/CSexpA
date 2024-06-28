@@ -15,6 +15,10 @@
 	flex: none;
 }
 
+.input-field {
+	width: 100%;
+}
+
 /* Overwrite materialize theme */
 input[type=text]:focus {
 	border-bottom: 1px solid var(--color-primary) !important;
