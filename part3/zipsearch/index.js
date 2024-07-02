@@ -244,26 +244,40 @@ function updateMap(zips) {
 
 			if(xhr.status === 200) {
 				try {
-					const data = JSON.parse(xhr.responseText);
-					if(data.length == 0) return;
-					if(!'lat' in data[0] || !'lon' in data[0]) return;
+					const obj = JSON.parse(xhr.responseText);
+					if(
+						!'response' in obj ||
+						!'location' in obj.response ||
+						obj.response.location.length < 0
+					) return;
+
+					const data = obj.response.location[0];
+					if(
+						!'x' in data ||
+						!'y' in data ||
+						!'prefecture' in data ||
+						!'city' in data ||
+						!'town' in data ||
+						!'postal' in data
+					) return;
 
 					let markerTexts = [
-						'<b>' + zipToString(zip) + '<b>'
+						'<b>' + zipToString(data.postal) + '</b>',
+						[
+							data.prefecture,
+							data.city,
+							data.town
+						].join('')
 					];
 
-					if('display_name' in data) {
-						markerTexts.push(data.display_name);
-					}
-
-					const marker = L.marker([data[0].lat, data[0].lon]).addTo(map);
+					const marker = L.marker([data.y, data.x]).addTo(map);
 					marker.bindPopup(markerTexts.join('<br>'));
 					markers.push(marker);
 
-					maxLat = Math.max(maxLat, data[0].lat);
-					minLat = Math.min(minLat, data[0].lat);
-					maxLon = Math.max(maxLon, data[0].lon);
-					minLon = Math.min(minLon, data[0].lon);
+					maxLat = Math.max(maxLat, data.y);
+					minLat = Math.min(minLat, data.y);
+					maxLon = Math.max(maxLon, data.x);
+					minLon = Math.min(minLon, data.x);
 
 					mapDiv.style.display = 'block';
 					map.invalidateSize(true);
@@ -283,7 +297,7 @@ function updateMap(zips) {
 			}
 		});
 
-		xhr.open('GET', `https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=jp&postalcode=${zip}`);
+		xhr.open('GET', `https://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zip}`);
 		xhr.send();
 	});
 }
