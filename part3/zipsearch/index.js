@@ -60,6 +60,36 @@ document.addEventListener('DOMContentLoaded', () => {
 		maxZoom: 19,
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 	}).addTo(map);
+
+	// Parse query
+	if(window.location.search !== '') {
+		const queryStr = window.location.search.slice(1); // Remove '?'
+		let query = null;
+		let page = null
+
+		queryStr.split('&').forEach(str => {
+			const param = str.split('=');
+
+			switch(param[0]) {
+				case 'q':
+					query = param[1];
+					break;
+
+				case 'p':
+					page = parseInt(param[1]);
+					break;
+			}
+		});
+
+		if(page === null) {
+			page = 1;
+		}
+
+		if(query !== null) {
+			input.value = decodeURI(query);
+			search(page);
+		}
+	}
 });
 
 function zipToString(zip) {
@@ -69,6 +99,11 @@ function zipToString(zip) {
 function search(page) {
 	const input = document.getElementById('input-query');
 	if(input.value.length == 0) return;
+
+	const usp = new URLSearchParams(window.location.search);
+	usp.set('q', input.value);
+	usp.set('p', page);
+	history.replaceState('', '', `?${usp.toString()}`);
 
 	const xhr = new XMLHttpRequest();
 	xhr.addEventListener('load', e => {
