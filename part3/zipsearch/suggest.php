@@ -5,6 +5,8 @@ const GET_PAGE = 'page';
 
 const DATA_RESULTS = 'results';
 const DATA_COUNT = 'count';
+const DATA_PER_PAGE = 'perPage';
+const DATA_PAGE = 'page';
 
 const DB_HOST = 'localhost';
 const DB_USER = 'pi';
@@ -83,6 +85,8 @@ $sqlq_count->bind_param('s', $query_like);
 $sqlq_count->execute();
 $result_count = $sqlq_count->get_result();
 $data[DATA_COUNT] = $result_count->fetch_row()[0];
+$data[DATA_PER_PAGE] = RESULTS_PER_PAGE;
+$data[DATA_PAGE] = $page;
 
 $sqlq_count->close();
 
