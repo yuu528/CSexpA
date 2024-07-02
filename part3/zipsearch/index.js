@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	const input = document.getElementById('input-query');
 
 	btn.addEventListener('click', e => {
-		btn.classList.add('disabled');
-		if(input.value.length == 0) return;
 		search(1);
 		return;
 	});
@@ -228,20 +226,11 @@ function updateMap(zips) {
 	});
 	markers = [];
 
-	let i = 0;
 	zips.map(zip =>
 		zip.toString().padStart(7, '0')
 	).forEach(zip => {
 		const xhr = new XMLHttpRequest();
 		xhr.addEventListener('load', e => {
-			i++;
-			if(zips.length <= i) {
-				loadingMap.style.display = 'none';
-
-				const btn = document.getElementById('btn-submit');
-				btn.classList.remove('disabled');
-			}
-
 			if(xhr.status === 200) {
 				try {
 					const obj = JSON.parse(xhr.responseText);
@@ -300,4 +289,6 @@ function updateMap(zips) {
 		xhr.open('GET', `https://geoapi.heartrails.com/api/json?method=searchByPostal&postal=${zip}`);
 		xhr.send();
 	});
+
+	loadingMap.style.display = 'none';
 }
