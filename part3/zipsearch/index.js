@@ -1,8 +1,16 @@
+// Constants
+const MAP_CENTER = [36, 137];
+
+// Global
+let map = null;
+let markers = [];
+
 document.addEventListener('DOMContentLoaded', () => {
 	const btn = document.getElementById('btn-submit');
 	const input = document.getElementById('input-query');
 
 	btn.addEventListener('click', e => {
+		btn.classList.add('disabled');
 		if(input.value.length == 0) return;
 		search(1);
 		return;
@@ -47,7 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
 			xhr.send();
 		}
 	});
+
+	// Setup map
+	map = L.map('map').setView(MAP_CENTER, 5);
+	L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(map);
 });
+
+function zipToString(zip) {
+	return zip.replace(/([0-9]{3})([0-9]{4})/, '$1-$2');
+}
 
 function search(page) {
 	const input = document.getElementById('input-query');
@@ -97,7 +116,7 @@ function search(page) {
 						newRuby.appendChild(newRt);
 					}
 
-					newTdZip.innerText = datum.zip.toString().padStart(7, '0').replace(/([0-9]{3})([0-9]{4})/, '$1-$2');
+					newTdZip.innerText = zipToString(datum.zip.toString().padStart(7, '0'));
 
 					newTdAddr.appendChild(newRuby);
 					newTr.appendChild(newTdAddr);
@@ -179,6 +198,9 @@ function search(page) {
 				pageUl.appendChild(newLiNext);
 
 				pageUl.style.display = 'block';
+
+				// Update map
+				updateMap(data.results.map(datum => datum.zip));
 			} catch(e) {
 				console.error(e);
 			}
@@ -187,4 +209,81 @@ function search(page) {
 
 	xhr.open('GET', `result.php?query=${input.value}&page=${page}`);
 	xhr.send();
+}
+
+function updateMap(zips) {
+	const mapDiv = document.getElementById('map');
+	const loadingMap = document.getElementById('loading-map');
+
+	loadingMap.style.display = 'block';
+
+	let maxLat = 0;
+	let minLat = 90;
+	let maxLon = 0;
+	let minLon = 180;
+
+	// remove markers
+	markers.forEach(marker => {
+		marker.remove();
+	});
+	markers = [];
+
+	let i = 0;
+	zips.map(zip =>
+		zip.toString().padStart(7, '0')
+	).forEach(zip => {
+		const xhr = new XMLHttpRequest();
+		xhr.addEventListener('load', e => {
+			i++;
+			if(zips.length <= i) {
+				loadingMap.style.display = 'none';
+
+				const btn = document.getElementById('btn-submit');
+				btn.classList.remove('disabled');
+			}
+
+			if(xhr.status === 200) {
+				try {
+					const data = JSON.parse(xhr.responseText);
+					if(data.length == 0) return;
+					if(!'lat' in data[0] || !'lon' in data[0]) return;
+
+					let markerTexts = [
+						'<b>' + zipToString(zip) + '<b>'
+					];
+
+					if('display_name' in data) {
+						markerTexts.push(data.display_name);
+					}
+
+					const marker = L.marker([data[0].lat, data[0].lon]).addTo(map);
+					marker.bindPopup(markerTexts.join('<br>'));
+					markers.push(marker);
+
+					maxLat = Math.max(maxLat, data[0].lat);
+					minLat = Math.min(minLat, data[0].lat);
+					maxLon = Math.max(maxLon, data[0].lon);
+					minLon = Math.min(minLon, data[0].lon);
+
+					mapDiv.style.display = 'block';
+					map.invalidateSize(true);
+					map.flyToBounds(
+						[
+							[minLat, minLon],
+							[maxLat, maxLon]
+						],
+						{
+							duration: 0.5,
+							padding: [100, 100]
+						}
+					);
+				} catch(e) {
+					console.error(e);
+				}
+			}
+		});
+
+		xhr.open('GET', `https://nominatim.openstreetmap.org/search?format=jsonv2&countrycodes=jp&postalcode=${zip}`);
+		xhr.send();
+	});
 }

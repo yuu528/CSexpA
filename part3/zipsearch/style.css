@@ -1,6 +1,6 @@
 :root {
-	--color-primary: #01579b;
-	/* light-blue darken-4 */
+	--color-primary: #01579b; /* light-blue darken-4 */
+	--color-accent-background: #b3e5fc; /* light-blue-lighten-4 */
 }
 
 .app-main {
@@ -28,6 +28,15 @@
 	display: none;
 }
 
+#loading-map {
+	display: none;
+}
+
+#map {
+	display: none;
+	height: 500px;
+}
+
 /* Overwrite materialize theme */
 input[type=text]:focus {
 	border-bottom: 1px solid var(--color-primary) !important;
@@ -41,4 +50,12 @@ input[type=text]:focus {
 .pagination li.disabled {
 	pointer-events: none;
 	user-select: none;
+}
+
+.progress {
+	background-color: var(--color-accent-background);
+}
+
+.intdeterminate {
+	background-color: var(--color-primary);
 }
