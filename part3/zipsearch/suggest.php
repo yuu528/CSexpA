@@ -1,6 +1,10 @@
 <?php
 // constants
 const GET_QUERY = 'query';
+const GET_PAGE = 'page';
+
+const DATA_RESULTS = 'results';
+const DATA_COUNT = 'count';
 
 const DB_HOST = 'localhost';
 const DB_USER = 'pi';
@@ -8,7 +12,7 @@ const DB_PASSWORD = 'csexpatestpassword';
 const DB_NAME = 'CSexp1DB';
 const DB_TABLE = 'zipJapan';
 
-const RESULT_LIMIT = 10;
+const RESULTS_PER_PAGE = 10;
 
 function reply($data) {
 	header('Content-Type: application/json');
@@ -21,6 +25,7 @@ $data = [
 	]
 ];
 
+// parse params
 if(array_key_exists(GET_QUERY, $_GET)) {
 	// remove space and tab
 	$query = str_replace(
@@ -30,6 +35,12 @@ if(array_key_exists(GET_QUERY, $_GET)) {
 	);
 } else {
 	reply($data);
+}
+
+if(array_key_exists(GET_PAGE, $_GET) && is_numeric($_GET[GET_PAGE])) {
+	$page = intval($_GET[GET_PAGE]);
+} else {
+	$page = 1;
 }
 
 // connect to DB
@@ -54,18 +65,29 @@ if(is_numeric($query)) {
 }
 
 // set limits
-$limit = RESULT_LIMIT;
-
-$sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . " $q_where LIMIT ?");
-
-$sqlq->bind_param('si', $query_like, $limit);
+$from_row = RESULTS_PER_PAGE * ($page - 1);
+$to_row = RESULTS_PER_PAGE;
 
 // get result
+$sqlq = $mysqli->prepare('SELECT * FROM ' . DB_TABLE . " $q_where LIMIT ?, ?");
+$sqlq->bind_param('sii', $query_like, $from_row, $to_row);
 $sqlq->execute();
 $result = $sqlq->get_result();
 
+$sqlq->close();
+
+// count all result
+$sqlq_count = $mysqli->prepare('SELECT count(*) FROM ' . DB_TABLE . " $q_where");
+$sqlq_count->bind_param('s', $query_like);
+
+$sqlq_count->execute();
+$result_count = $sqlq_count->get_result();
+$data[DATA_COUNT] = $result_count->fetch_row()[0];
+
+$sqlq_count->close();
+
 while(!is_null($row = $result->fetch_assoc()) && $row !== false) {
-	array_push($data['results'], $row);
+	array_push($data[DATA_RESULTS], $row);
 }
 
 reply($data);
