@@ -21,15 +21,27 @@
 
 		<div class="app-main">
 			<p>郵便番号または住所の漢字・カナ表記のいずれかを入力し、検索ボタンを押してください。</p>
-			<form class="input-field" action="result.php" method="get" target="frame-result" id="form">
+			<div class="input-field" action="result.php" method="get" target="frame-result" id="form">
 				<input name="query" id="input-query" type="text" placeholder="住所" class="autocomplete">
 				<button type="submit" id="btn-submit" class="btn waves-effect waves-light light-blue darken-4">
 					<i class="material-icons left">search</i>
 					検索
 				</button>
-			</form>
+			</div>
 
-			<iframe name="frame-result" frameborder="no" width="100%" id="frame"></iframe>
+			<table id="table-result">
+				<thead>
+					<tr>
+						<th>住所</th>
+						<th>郵便番号</th>
+					</tr>
+				</thead>
+				<tbody id="table-result-body">
+				</tbody>
+			</table>
+
+			<ul class="pagination" id="pagination">
+			</ul>
 		</div>
 
 		<!-- Materialize -->
