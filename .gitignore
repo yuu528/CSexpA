@@ -5,4 +5,7 @@ tmp.txt
 *.test.csv
 *.test.png
 100MB.txt
+geotag.csv
+tag.csv
+merged_sorted_by_len_date_min_100.csv
 /part3/downloaded_csvs/
