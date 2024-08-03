@@ -18,7 +18,7 @@ if(isset($_REQUEST["tag"])){
 		echo 'DB Error';
 	}
 
-	$sqlq = $mysqli->prepare('SELECT * FROM tag IGNORE INDEX (i_tag), geotag IGNORE INDEX (i_id) WHERE tag.tag like ? AND tag.id = geotag.id ORDER BY time DESC LIMIT 100');
+	$sqlq = $mysqli->prepare('SELECT * FROM tag IGNORE INDEX (i_tag) INNER JOIN geotag IGNORE INDEX (i_id) USING (id) WHERE tag.tag like ? ORDER BY time DESC LIMIT 100');
 	$sqlq->bind_param('s', $_REQUEST['tag']);
 	$sqlq->execute();
 	$result = $sqlq->get_result();

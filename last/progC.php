@@ -9,8 +9,6 @@ const DB_HOST = 'localhost';
 const DB_USER = 'pi';
 const DB_PASSWORD = 'csexpatestpassword';
 const DB_NAME = 'CSexp1DB';
-const DB_TABLE_TAG = 'tag';
-const DB_TABLE_GEOTAG = 'geotag';
 
 if(isset($_REQUEST["tag"])){
 	echo "[Program C] Input tag = [".$_REQUEST["tag"]."]<br>";
@@ -20,7 +18,7 @@ if(isset($_REQUEST["tag"])){
 		echo 'DB Error';
 	}
 
-	$sqlq = $mysqli->prepare('SELECT * FROM tag, geotag WHERE tag.tag like ? AND tag.id = geotag.id ORDER BY time DESC LIMIT 100');
+	$sqlq = $mysqli->prepare('SELECT * FROM tag INNER JOIN geotag USING (id) WHERE tag.tag like ? ORDER BY time DESC LIMIT 100');
 	$sqlq->bind_param('s', $_REQUEST['tag']);
 	$sqlq->execute();
 	$result = $sqlq->get_result();
